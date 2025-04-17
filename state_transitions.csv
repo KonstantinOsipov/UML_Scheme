@@ -1,0 +1,10 @@
+score,TБ0.5,op_TБ0.5,TБ1.0,op_TБ1.0,TБ1.5,op_TБ1.5,TБ2.0,op_TБ2.0
+0:0,WAITING → WAITING,-,WAITING → WAITING,-,WAITING → WAITING,-,WAITING → WAITING,-
+1:0,WAITING → WIN,betposition_Calculate,WAITING → CANCELED,betposition_Calculate,WAITING → WAITING,-,WAITING → WAITING,-
+1:1,WIN → WIN,-,CANCELED → WIN,Orders_Betposition_ReCalculate,WAITING → WIN,betposition_Calculate,WAITING → CANCELED,betposition_Calculate
+2:0,WIN → WIN,-,WIN → WIN,-,WIN → WIN,-,CANCELED → CANCELED,-
+2:1,WIN → WIN,-,WIN → WIN,-,WIN → WIN,-,CANCELED → WIN,Orders_Betposition_ReCalculate
+2:0,WIN → WIN,-,WIN → WIN,-,WIN → WIN,-,WIN → CANCELED,Orders_Betposition_ReCalculate
+1:0,WIN → WIN,-,WIN → CANCELED,Orders_Betposition_ReCalculate,WIN → WAITING,lineservices_RollbackCalculateOrders,CANCELED → WAITING,lineservices_RollbackCalculateOrders
+1:1,WIN → WIN,-,CANCELED → WIN,Orders_Betposition_ReCalculate,WAITING → WIN,betposition_Calculate,WAITING → CANCELED,betposition_Calculate
+2:1,WIN → WIN,-,WIN → WIN,-,WIN → WIN,-,CANCELED → WIN,Orders_Betposition_ReCalculate

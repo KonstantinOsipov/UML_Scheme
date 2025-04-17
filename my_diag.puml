@@ -1,0 +1,16 @@
+@startuml
+!define SPRITESURL https://raw.githubusercontent.com/plantuml-stdlib/cicon-plantuml-sprites/master/sprites
+!includeurl SPRITESURL/sqlserver.puml
+
+actor User
+participant "Web Browser" as Browser
+participant "Web Server" as Server
+participant "<$sqlserver> Database (MS SQL)" as DB
+
+User -> Browser: Open website
+Browser -> Server: HTTP GET /
+Server -> DB: Query user data
+DB --> Server: Return user data
+Server --> Browser: Render webpage
+Browser --> User: Display webpage
+@enduml
