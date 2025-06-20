@@ -1,7 +1,7 @@
-#Передача в линию измененных коэффициентов
+# Передача в линию измененных коэффициентов
 @startuml
 skinparam backgroundColor white
-skinparam sequenceMessageAlign center
+skinparam sequenceMessageAlign left
 
 skinparam participant {
     BackgroundColor #e6f3ff
@@ -17,11 +17,27 @@ skinparam database {
 }
 
 participant "[[https://confluence.sportsapi.ru/x/RKbXCw GoodWin/AutoWin]]" as GW
-participant "[Trader2+]" as TR
-database "[OscarYard_SE]" as OY
+participant "Trader2+" as TR
+database "OscarYard_SE" as OY
+participant "ME ACL" as ME
+participant "Kafka\n(event-feed)" as KAFKA #lightblue
 
-GW -> TR: 1.1. Отправка/Обновление коэффициентов (PUT/odds)
-TR -> OY: 1.2. Отобразить данные на форме, сохранить данные в БД
-OY -> OY: 1.3. Вызов процедур для сохранения
+GW -> TR: 1. Отправка/Обновление \nкоэффициентов (PUT/outcomes)
+TR -> OY: 2. Отобразить данные на форме,\nсохранить данные в БД
+activate OY
 
+note right of OY
+Форма передает только
+обновленные коэффициенты
+end note
+
+OY -> OY: 3. Вызов ХП [Live_Event_UpdateBulk]
+return 4. Процедура выполнилась, ОК
+
+TR -> ME: 5. POST /api/v1/event/{eventId}/odds
+activate ME
+
+ME -> ME: 6. Вызов ХП [[https://confluence.ligastavok.tech/x/AAfIEg MEACL_GetOutcomeBlocks]]\nВызов ХП MEACL_GetEventStatus\nдля получения статуса события.\nФормирование сообщения
+
+ME -> KAFKA: 7. Отправка сообщения в топик
 @enduml
