@@ -37,7 +37,12 @@ return 4. Процедура выполнилась, ОК
 TR -> ME: 5. POST /api/v1/event/{eventId}/odds
 activate ME
 
-ME -> ME: 6. Вызов ХП [[https://confluence.ligastavok.tech/x/AAfIEg MEACL_GetOutcomeBlocks]]\nВызов ХП MEACL_GetEventStatus\nдля получения статуса события.\nФормирование сообщения
+ME -> OY: 6. Запрос в БД
+activate OY
 
-ME -> KAFKA: 7. Отправка сообщения в топик
+OY -> OY: 7. Вызов ХП\n [[https://confluence.ligastavok.tech/x/AAfIEg MEACL_GetOutcomeBlocks]]
+return 8. Процедура выполнилась, ОК
+ME -> ME: 9. Формирование сообщения
+ME -> KAFKA: 10. Отправка сообщения в топик
+deactivate ME
 @enduml
