@@ -1,0 +1,45 @@
+@startuml
+
+skinparam sequenceParticipantPadding 50
+skinparam sequenceArrowThickness 1.5
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+scale 1.8
+skinparam sequenceGroupBackgroundColor #e8f5e8
+skinparam sequenceGroupFontStyle bold
+skinparam sequenceGroupFontColor #2e7d32
+
+' Размещаем участников слева направо: GoodWin -> Пользователь -> Trader2 -> БД
+participant "ПО GoodWin" as GoodWin
+actor Пользователь
+participant "ПО Трейдер2" as Trader2
+database "OscarYard DB" as DB
+
+' === Взаимодействие через интерфейс пользователя ===
+Пользователь -> Trader2: Нажимает кнопку "Расписание"
+Trader2 -> DB: Запрос данных (фильтры по умолчанию)
+DB --> Trader2: Возвращает перечень событий
+Trader2 -> Пользователь: Открывается форма, отображение событий
+
+alt Пользователь меняет фильтры
+    Пользователь -> Trader2: Меняет параметры фильтров
+    Trader2 -> DB: Запрос данных (новые фильтры)
+    DB --> Trader2: Новые данные расписания
+    Trader2 -> Пользователь: Обновляет данные
+end
+
+' === Взаимодействие с внешним ПО (GoodWin) ===
+group Взаимодействие с внешним ПО\n<<ПО GoodWin>>
+    GoodWin -> Trader2: GET /outcomes (запрос событий Лайв)
+    Trader2 --> GoodWin: Ответ с ID событий Лайв
+
+    ' === Цикл: Периодическая отправка кэфов от GoodWin к Трейдер2 ===
+    loop Постоянная отправка коэффициентов (режим ведения Лайв-события)
+        GoodWin -> Trader2: PUT /outcomes (отправка кэфов по событию)
+        Trader2 -> Trader2: Обновление кэфов\nна форме ведения Лайва
+        Trader2 -> DB: Запись обновлённых кэфов в OscarYard DB
+        Trader2 -> Пользователь: Отображение кэфов на форме Лайва
+    end
+end group
+
+@enduml
